@@ -240,3 +240,25 @@ def select_small_sources(imgL, thr, lo, hi):
 
     # -- return the labels, sizes, and indices
     return labs, lsz, ind
+
+
+def elapsed_time(t0, prefix="  "):
+    """ Helper function for elapse time. """
+
+    # -- round to the nearest millisecond and alert
+    dt = round(time.time() - t0, 3)
+    print(prefix + "elapsed time: {0}s".format(dt))
+
+    return
+
+
+def standardize(arr, axis=1):
+    """ Standardize a 2D array (assumes float).  Set to 0 when standard 
+    deviation is 0. """
+
+    # -- find where standard deviation is 0
+    sig   = arr.std(axis, keepdims=True)
+    coeff = sig == 0
+
+    # -- return standardized array
+    return ~coeff * (arr - arr.mean(axis, keepdims=True)) / (sig + coeff)
