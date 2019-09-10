@@ -3,6 +3,9 @@
 
 import time
 import hyss
+from sklearn.cluster import KMeans
+
+# -- these should be turned into imports
 imps = ["utils.py", "select_pixels.py"]
 for ii in imps:
     exec(open(ii).read())
@@ -12,8 +15,7 @@ for ii in imps:
 t00 = time.time()
 
 # -- set the scan index number
-snum = 160
-# snum = 159
+snum = 159
 
 # -- get the file list
 flist = get_file_list()
@@ -42,6 +44,13 @@ stand_specs = standardize(specs)
 print("correlating spectra with NOAA...")
 t0 = time.time()
 cc = np.dot(stand_specs, stand_noaa.T) / stand_specs.shape[1]
+elapsed_time(t0)
+
+# -- cluster spectra
+print("K-Means clustering...")
+t0 = time.time()
+km = KMeans(n_clusters=15, n_jobs=16)
+km.fit(stand_specs)
 elapsed_time(t0)
 
 # -- total time
