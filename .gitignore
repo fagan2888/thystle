@@ -1,5 +1,6 @@
 *.pyc
 *~
 *#
+*.hcfg
 data
 output
