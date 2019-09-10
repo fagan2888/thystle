@@ -15,8 +15,9 @@ def select_pixels(index, thr=5):
     dpath = os.path.join("..", "output", "clips_luminosity")
 
     # -- get the file list
-    flist = glob.glob(os.path.join(dpath, "*.npy"))
+    flist = sorted(glob.glob(os.path.join(dpath, "*.npy")))
 
     # -- return the image
+    print("reading clips luminosity file: {0}".format(flist[index]))
     return np.load(flist[index]) > thr
 
