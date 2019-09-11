@@ -6,6 +6,7 @@ import time
 import glob
 import numpy as np
 from scipy.ndimage import measurements as spm
+from scipy.ndimage.filters import gaussian_filter as gf
 
 def read_header(hdrfile, verbose=True):
     """
@@ -262,3 +263,34 @@ def standardize(arr, axis=1):
 
     # -- return standardized array
     return ~coeff * (arr - arr.mean(axis, keepdims=True)) / (sig + coeff)
+
+
+def read_hyper_clean(fpath, fname=None):
+    """ Read a clean hyperspectral scan. """
+
+    # -- read in the scan
+    print("reading and converting to float...")
+    t0        = time.time()
+    cube      = read_hyper(fpath, fname)
+    cube.data = cube.data.astype(float)
+    elapsed_time(t0)
+
+    # -- read in the offset
+    oname = os.path.split(cube.filename)[-1].replace(".raw", "_off.npy")
+    opath = os.path.join("..", "output", "scan_offsets", oname)
+    try:
+        off = np.load(opath)
+    except:
+        print("offset file {0} not found!!!\n  Generating...")
+        t0  = time.time()
+        off = np.median(gf(cube.data, (0, 1, 1)), 2, keepdims=True)
+        np.save(opath, off)
+        elapsed_time(t0)
+
+    # -- remove offset
+    print("removing offset...")
+    t0         = time.time()
+    cube.data -= off
+    elapsed_time(t0)
+
+    return cube
