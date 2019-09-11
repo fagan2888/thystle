@@ -3,6 +3,9 @@
 
 import time
 import hyss
+import numpy as np
+import pickle as pkl
+from scipy.interpolate import interp1d
 from sklearn.cluster import KMeans
 
 # -- these should be turned into imports
@@ -27,7 +30,7 @@ imgLcc = select_pixels(snum)
 # -- get the spectra
 print("reading spectra...")
 t0    = time.time()
-cube  = read_hyper(flist[snum])
+cube  = read_hyper_clean(flist[snum])
 specs = cube.data[:, imgLcc].astype(float).T
 elapsed_time(t0)
 
@@ -52,6 +55,23 @@ t0 = time.time()
 km = KMeans(n_clusters=15, n_jobs=16)
 km.fit(stand_specs)
 elapsed_time(t0)
+
+# -- read in the 2016 clusters
+kmname  = os.path.join("..", "data", "km_cluster.pkl")
+wname   = os.path.join("..", "data", "vnir_waves.npy")
+km16    = pkl.load(open(kmname, "rb"), encoding="latin1")
+waves16 = np.load(wname)
+
+# -- interpolate specs onto 2016 wavelengths and re-standardize
+print("interpolating 2018 spectra onto 2016 wavelengths...")
+t0           = time.time()
+interp_specs = interp1d(cube.waves, specs, axis=1, fill_value="extrapolate")
+specs18      = interp_specs(waves16)
+specs18      = standardize(specs18)
+elapsed_time(t0)
+
+# -- assign 2018 spectra to 2016 K-Means clusters
+labs18 = km16.predict(specs18)
 
 # -- total time
 elapsed_time(t00, "TOTAL ")
