@@ -28,7 +28,7 @@ flist = get_file_list()
 print("working on scan: {0}".format(flist[snum]))
 
 # -- get the source pixels
-imgLcc = select_pixels(snum)
+imgLcc = select_pixels(snum, vfilter=True)
 
 # -- get the spectra
 print("reading spectra...")
