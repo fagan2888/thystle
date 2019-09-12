@@ -14,6 +14,9 @@ for ii in imps:
     exec(open(ii).read())
 
 
+# -- defaults
+kmcluster = False
+
 # -- initialize timer
 t00 = time.time()
 
@@ -50,11 +53,12 @@ cc = np.dot(stand_specs, stand_noaa.T) / stand_specs.shape[1]
 elapsed_time(t0)
 
 # -- cluster spectra
-print("K-Means clustering...")
-t0 = time.time()
-km = KMeans(n_clusters=15, n_jobs=16)
-km.fit(stand_specs)
-elapsed_time(t0)
+if kmcluster:
+    print("K-Means clustering...")
+    t0 = time.time()
+    km = KMeans(n_clusters=15, n_jobs=16)
+    km.fit(stand_specs)
+    elapsed_time(t0)
 
 # -- read in the 2016 clusters
 kmname  = os.path.join("..", "data", "km_cluster.pkl")
