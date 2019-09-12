@@ -4,9 +4,10 @@
 import os
 import glob
 import numpy as np
+from scipy.ndimage.filters import uniform_filter as uf
 # from utils import *
 
-def select_pixels(index, thr=5):
+def select_pixels(index, thr=5, vfilter=False):
     """
     Read and threshold a clipped luminosity image.
     """
@@ -18,6 +19,10 @@ def select_pixels(index, thr=5):
     flist = sorted(glob.glob(os.path.join(dpath, "*.npy")))
 
     # -- return the image
-    print("reading clips luminosity file: {0}".format(flist[index]))
-    return np.load(flist[index]) > thr
+    if vfilter:
+        imgLcc = np.load(flist[index]) > thr
+        imgLcc[uf(1.0 * imgLcc, (100, 0)) == 1] = False
+        return imgLcc        
+    else:
+        return np.load(flist[index]) > thr
 
