@@ -125,7 +125,8 @@ def lighting_tech2(labs, km, imgL):
     return
 
 
-def lighting_tech3(labs, km, imgLc, imgL):
+def lighting_tech3(labs, km, imgLc, imgL, outfile=None, aspect=1, xlim=None,
+                   ylim=None):
     
     # -- set the colors, types, and KM indices
     clrs  = ['#E24A33', '#8EBA42', '#348ABD', '#988ED5', '#FBC15E', '#FFB5B8']
@@ -148,16 +149,30 @@ def lighting_tech3(labs, km, imgLc, imgL):
         xpos.append(txpos)
         ypos.append(typos)
 
+    # -- initialize figure
     fig, ax = plt.subplots(figsize=(10, 2.5))
     fig.subplots_adjust(0, 0, 1, 1)
-    
 
     # -- add the lighting tags
     for ii in range(len(kinds)):
         ax.scatter(xpos[ii], ypos[ii], 1, clrs[ii], ".", lw=0)
         ax.scatter(xpos[ii], ypos[ii], 4, clrs[ii], ".", lw=0)
 
-    ax.imshow(imgL, "gist_gray", aspect=0.45)
+    # -- display the luminosity image
+    ax.imshow(imgL, "gist_gray", aspect=aspect)
+
+    # -- clean up axis
+    ax.axis("off")
+
+    if xlim:
+        ax.set_xlim(xlim)
+    if ylim:
+        ax.set_ylim(ylim)
+    
     fig.canvas.draw()
+
+    # -- save figure if desired
+    if outfile:
+        fig.savefig(outfile, clobber=True)
 
     return
