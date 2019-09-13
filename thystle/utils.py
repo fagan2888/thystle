@@ -281,7 +281,7 @@ def read_hyper_clean(fpath, fname=None):
     try:
         off = np.load(opath)
     except:
-        print("offset file {0} not found!!!\n  Generating...")
+        print("offset file {0} not found!!!\n  Generating...".format(opath))
         t0  = time.time()
         off = np.median(gf(cube.data, (0, 1, 1)), 2, keepdims=True)
         np.save(opath, off)
