@@ -176,3 +176,28 @@ def lighting_tech3(labs, km, imgLc, imgL, outfile=None, aspect=1, xlim=None,
         fig.savefig(outfile, clobber=True)
 
     return
+
+
+
+def lighting_tech_specs(waves, km):
+    
+    # -- set the colors, types, and KM indices
+    clrs  = ['#E24A33', '#8EBA42', '#348ABD', '#988ED5', '#FBC15E', '#FFB5B8']
+    types = ['High Pressure\nSodium', 'LED', 'Fluorescent', 'Metal\nHalide',
+             'LED', 'LED']
+    inds  = [10, 2, 3, 5, 0, 7]
+
+    fig, ax = plt.subplots(1, 6, figsize=(10, 2.5), sharey=True)
+    fig.subplots_adjust(0.06, 0.22, 0.94, 0.8, 0.0)
+
+    for ii in range(len(clrs)):
+        ax[ii].plot(waves, km.cluster_centers_[inds[ii]], color=clrs[ii])
+        ax[ii].set_title(types[ii])
+
+    ax[0].set_ylabel("intensity\n[arb units]")
+    fig.text(0.5, 0.02, "wavelength [nm]", ha="center")
+    fig.canvas.draw()
+
+    fig.savefig("../output/lighting_tech_specs.png", clobber=True)
+
+    return
